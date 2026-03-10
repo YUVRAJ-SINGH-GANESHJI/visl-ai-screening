@@ -6,16 +6,52 @@ from googleapiclient.discovery import build
 import os
 import pickle
 import uuid
+import base64
+import tempfile
 from app.logger import get_logger
 
 log = get_logger("calendar_service")
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 TOKEN_FILE = "token.pickle"
+CREDENTIALS_FILE = "credentials.json"
+
+
+def _bootstrap_credentials_from_env():
+    """
+    On Render (or any server without local files), recreate credentials.json
+    and token.pickle from environment variables before OAuth runs.
+
+    Set these on Render → Environment:
+      GOOGLE_CREDENTIALS_JSON  — full contents of credentials.json (paste as-is)
+      GOOGLE_TOKEN_B64         — base64-encoded token.pickle (see HOSTING.md §5)
+    """
+    # Write credentials.json from env var if the file doesn't exist locally
+    if not os.path.exists(CREDENTIALS_FILE):
+        creds_json = os.environ.get("GOOGLE_CREDENTIALS_JSON", "")
+        if creds_json:
+            with open(CREDENTIALS_FILE, "w") as f:
+                f.write(creds_json)
+            log.info("credentials.json written from GOOGLE_CREDENTIALS_JSON env var")
+        else:
+            log.warning("credentials.json missing and GOOGLE_CREDENTIALS_JSON env var not set")
+
+    # Write token.pickle from base64 env var if the file doesn't exist locally
+    if not os.path.exists(TOKEN_FILE):
+        token_b64 = os.environ.get("GOOGLE_TOKEN_B64", "")
+        if token_b64:
+            with open(TOKEN_FILE, "wb") as f:
+                f.write(base64.b64decode(token_b64))
+            log.info("token.pickle written from GOOGLE_TOKEN_B64 env var")
+        else:
+            log.warning("token.pickle missing and GOOGLE_TOKEN_B64 env var not set — OAuth login will be required")
 
 
 def get_calendar_service():
     """Authenticate and return Google Calendar service."""
+    # Recreate credential files from env vars when running on Render
+    _bootstrap_credentials_from_env()
+
     creds = None
     if os.path.exists(TOKEN_FILE):
         with open(TOKEN_FILE, "rb") as token:
@@ -25,7 +61,7 @@ def get_calendar_service():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
             creds = flow.run_local_server(port=8090)
         with open(TOKEN_FILE, "wb") as token:
             pickle.dump(creds, token)
