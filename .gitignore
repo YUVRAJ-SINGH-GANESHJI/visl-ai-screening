@@ -8,7 +8,6 @@ venv/
 logs/
 token.pickle
 credentials.json
-config.py
 
 # Node
 node_modules/
