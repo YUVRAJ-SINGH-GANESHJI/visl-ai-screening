@@ -1,4 +1,6 @@
 import smtplib
+import base64
+import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from app.config import settings
@@ -7,26 +9,51 @@ from app.logger import get_logger
 log = get_logger("email_service")
 
 
-def _send_via_resend(to_email: str, subject: str, html_body: str) -> bool:
-    """Send email via Resend API (HTTPS — works on Render free tier)."""
-    import resend
-    resend.api_key = settings.RESEND_API_KEY
+def _send_via_gmail_api(to_email: str, subject: str, html_body: str) -> bool:
+    """
+    Send email via Gmail API using the same OAuth credentials as Google Calendar.
+    Works on Render (HTTPS, not SMTP) and sends to any recipient.
+    Requires GOOGLE_CREDENTIALS_JSON + GOOGLE_TOKEN_B64 env vars to be set.
+    """
     try:
-        resend.Emails.send({
-            "from": settings.RESEND_FROM,
-            "to": to_email,
-            "subject": subject,
-            "html": html_body,
-        })
-        log.info("Email sent via Resend", to=to_email)
+        from app.services.calendar_service import get_calendar_service
+        from googleapiclient.discovery import build
+        # Reuse the same OAuth credentials that Calendar uses
+        from app.services.calendar_service import _bootstrap_credentials_from_env, TOKEN_FILE, CREDENTIALS_FILE, SCOPES
+        import pickle
+        from google.oauth2.credentials import Credentials
+        from google.auth.transport.requests import Request
+
+        _bootstrap_credentials_from_env()
+
+        creds = None
+        if os.path.exists(TOKEN_FILE):
+            with open(TOKEN_FILE, "rb") as f:
+                creds = pickle.load(f)
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            else:
+                raise RuntimeError("Gmail OAuth token missing or expired — re-run local OAuth")
+
+        service = build("gmail", "v1", credentials=creds)
+
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = subject
+        msg["To"] = to_email
+        msg.attach(MIMEText(html_body, "html"))
+
+        raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
+        service.users().messages().send(userId="me", body={"raw": raw}).execute()
+        log.info("Email sent via Gmail API", to=to_email)
         return True
     except Exception as e:
-        log.error("Resend failed", to=to_email, error=str(e))
+        log.error("Gmail API send failed", to=to_email, error=str(e))
         return False
 
 
 def _send_via_smtp(to_email: str, subject: str, html_body: str) -> bool:
-    """Send email via Gmail SMTP (local dev only — blocked on Render free tier)."""
+    """Send email via Gmail SMTP (local dev — blocked on Render free tier)."""
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"] = settings.SMTP_USER
@@ -51,10 +78,14 @@ def _send_via_smtp(to_email: str, subject: str, html_body: str) -> bool:
 
 
 def send_email(to_email: str, subject: str, html_body: str) -> bool:
-    """Send email — uses Resend on Render, SMTP locally."""
+    """
+    Send email — picks method automatically:
+      • Gmail API  → when GOOGLE_CREDENTIALS_JSON env var is set (Render hosted)
+      • Gmail SMTP → locally (when running on your PC)
+    """
     log.info("Sending email", to=to_email, subject=subject)
-    if settings.RESEND_API_KEY:
-        return _send_via_resend(to_email, subject, html_body)
+    if os.environ.get("GOOGLE_CREDENTIALS_JSON"):
+        return _send_via_gmail_api(to_email, subject, html_body)
     return _send_via_smtp(to_email, subject, html_body)
 
 

@@ -12,7 +12,10 @@ from app.logger import get_logger
 
 log = get_logger("calendar_service")
 
-SCOPES = ["https://www.googleapis.com/auth/calendar"]
+SCOPES = [
+    "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/gmail.send",
+]
 TOKEN_FILE = "token.pickle"
 CREDENTIALS_FILE = "credentials.json"
 
