@@ -41,9 +41,15 @@ export const uploadTestResults = (file) => {
 export const sendTestEmails = (candidateIds, testUrl, emailBody = "") =>
   api.post("/email/send-test", { candidate_ids: candidateIds, test_url: testUrl, email_body: emailBody });
 
-// interviews: [{candidate_id, interview_date, duration_minutes}]
-export const scheduleInterviews = (interviews) =>
-  api.post("/interview/schedule", interviews);
+export const scheduleInterviews = (candidateIds, dateTime, durationMinutes = 30) =>
+  api.post(
+    "/interview/schedule",
+    candidateIds.map((id) => ({
+      candidate_id: id,
+      interview_date: dateTime,
+      duration_minutes: durationMinutes,
+    }))
+  );
 
 export const runFinalEvaluation = () => api.post("/evaluate/finalize");
 

@@ -26,12 +26,19 @@ async def send_test_emails(
 
     results = []
     for c in candidates:
-        success = send_test_link(c.name, c.email, test_url, email_body)
-        if success:
-            c.stage = PipelineStage.TEST_SENT
-            results.append({"name": c.name, "email": c.email, "status": "sent"})
-        else:
-            results.append({"name": c.name, "email": c.email, "status": "failed"})
+        try:
+            success = send_test_link(c.name, c.email, test_url, email_body)
+            if success:
+                c.stage = PipelineStage.TEST_SENT
+                results.append({"name": c.name, "email": c.email, "status": "sent"})
+            else:
+                results.append({
+                    "name": c.name, "email": c.email, "status": "failed",
+                    "reason": "Email service returned False — check Render logs for details",
+                })
+        except Exception as e:
+            log.error("Exception sending test email", candidate=c.name, error=str(e))
+            results.append({"name": c.name, "email": c.email, "status": "failed", "reason": str(e)})
 
     db.commit()
     log.info("Test emails sent", total=len(results))

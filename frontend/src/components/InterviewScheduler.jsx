@@ -89,18 +89,28 @@ export default function InterviewScheduler({ candidates }) {
       )}
 
       {results && (
-        <div className="mt-4 p-3 bg-gray-50 rounded text-sm">
+        <div className="mt-4 text-sm">
           {results.error ? (
-            <p className="text-red-600">Error: {results.error}</p>
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+              ✗ Failed: {results.error}
+            </div>
           ) : (
-            <>
-              <p className="font-medium">Scheduled: {results.scheduled}</p>
-              {results.results?.map((r, i) => (
-                <p key={i} className={r.status === "scheduled" ? "text-green-600" : "text-red-600"}>
-                  {r.name} — {r.status} {r.meet_link && `(${r.meet_link})`}
-                </p>
-              ))}
-            </>
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700">
+              <p className="font-semibold mb-2">
+                ✓ {results.scheduled} interview{results.scheduled !== 1 ? "s" : ""} scheduled
+                {results.results?.filter(r => r.status === "failed").length > 0 &&
+                  `, ${results.results.filter(r => r.status === "failed").length} failed`}
+              </p>
+              <ul className="space-y-1 text-xs">
+                {results.results?.map((r, i) => (
+                  <li key={i}>
+                    {r.status === "scheduled" ? "✅" : "❌"} {r.name} — {r.email} — {r.status}
+                    {r.meet_link && <span className="text-blue-600 ml-1">({r.meet_link})</span>}
+                    {r.error && <span className="text-red-500 ml-1">({r.error})</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
       )}

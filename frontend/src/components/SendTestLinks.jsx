@@ -41,10 +41,15 @@ export default function SendTestLinks({ candidates, onSent }) {
         testUrl.trim(),
         emailBody.trim()
       );
-      const sent = res.data.results.filter((r) => r.status === "sent").length;
-      const failed = res.data.results.filter((r) => r.status === "failed").length;
-      setResult({ sent, failed, details: res.data.results });
-      if (onSent) onSent();
+      if (res.data.error || !res.data.results) {
+        setResult({ error: res.data.error || "Unexpected response from server" });
+        return;
+      }
+      const results = res.data.results;
+      const sent = results.filter((r) => r.status === "sent").length;
+      const failed = results.filter((r) => r.status === "failed").length;
+      setResult({ sent, failed, details: results });
+      if (sent > 0 && onSent) onSent();
     } catch (err) {
       setResult({ error: err.response?.data?.error || err.message });
     }
@@ -168,6 +173,9 @@ export default function SendTestLinks({ candidates, onSent }) {
               {result.details.map((r, i) => (
                 <li key={i}>
                   {r.status === "sent" ? "✅" : "❌"} {r.name} — {r.email} — {r.status}
+                  {r.reason && (
+                    <span className="text-red-500 ml-1">({r.reason})</span>
+                  )}
                 </li>
               ))}
             </ul>

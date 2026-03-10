@@ -80,11 +80,11 @@ def _send_via_smtp(to_email: str, subject: str, html_body: str) -> bool:
 def send_email(to_email: str, subject: str, html_body: str) -> bool:
     """
     Send email — picks method automatically:
-      • Gmail API  → when GOOGLE_CREDENTIALS_JSON env var is set (Render hosted)
-      • Gmail SMTP → locally (when running on your PC)
+      • Gmail API  → when credentials.json exists locally OR GOOGLE_CREDENTIALS_JSON env var is set (Render)
+      • Gmail SMTP → only if neither Google credential source is available
     """
     log.info("Sending email", to=to_email, subject=subject)
-    if os.environ.get("GOOGLE_CREDENTIALS_JSON"):
+    if os.environ.get("GOOGLE_CREDENTIALS_JSON") or os.path.exists("credentials.json"):
         return _send_via_gmail_api(to_email, subject, html_body)
     return _send_via_smtp(to_email, subject, html_body)
 
