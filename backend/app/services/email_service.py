@@ -7,22 +7,37 @@ from app.logger import get_logger
 log = get_logger("email_service")
 
 
-def send_email(to_email: str, subject: str, html_body: str) -> bool:
-    """Send an email via SMTP with error handling."""
-    log.info("Sending email", to=to_email, subject=subject)
+def _send_via_resend(to_email: str, subject: str, html_body: str) -> bool:
+    """Send email via Resend API (HTTPS — works on Render free tier)."""
+    import resend
+    resend.api_key = settings.RESEND_API_KEY
+    try:
+        resend.Emails.send({
+            "from": settings.RESEND_FROM,
+            "to": to_email,
+            "subject": subject,
+            "html": html_body,
+        })
+        log.info("Email sent via Resend", to=to_email)
+        return True
+    except Exception as e:
+        log.error("Resend failed", to=to_email, error=str(e))
+        return False
 
+
+def _send_via_smtp(to_email: str, subject: str, html_body: str) -> bool:
+    """Send email via Gmail SMTP (local dev only — blocked on Render free tier)."""
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"] = settings.SMTP_USER
     msg["To"] = to_email
     msg.attach(MIMEText(html_body, "html"))
-
     try:
         with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
             server.starttls()
             server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
             server.send_message(msg)
-        log.info("Email sent successfully", to=to_email)
+        log.info("Email sent via SMTP", to=to_email)
         return True
     except smtplib.SMTPAuthenticationError:
         log.error("SMTP authentication failed — check credentials")
@@ -31,8 +46,16 @@ def send_email(to_email: str, subject: str, html_body: str) -> bool:
         log.error("Recipient refused", to=to_email)
         return False
     except Exception as e:
-        log.error("Failed to send email", to=to_email, error=str(e))
+        log.error("Failed to send email via SMTP", to=to_email, error=str(e))
         return False
+
+
+def send_email(to_email: str, subject: str, html_body: str) -> bool:
+    """Send email — uses Resend on Render, SMTP locally."""
+    log.info("Sending email", to=to_email, subject=subject)
+    if settings.RESEND_API_KEY:
+        return _send_via_resend(to_email, subject, html_body)
+    return _send_via_smtp(to_email, subject, html_body)
 
 
 def send_test_link(candidate_name: str, to_email: str, test_url: str, custom_body: str = "") -> bool:

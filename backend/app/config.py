@@ -25,9 +25,14 @@ class Settings(BaseSettings):
     # Generate at https://github.com/settings/tokens (no scopes needed for public repos)
     GITHUB_TOKEN: str = ""
 
-    # ── Email (Gmail SMTP) ────────────────────────────────────────────────────
-    # Use a Gmail App Password, NOT your normal Gmail password.
-    # Generate at: Google Account → Security → 2-Step Verification → App Passwords
+    # ── Email ─────────────────────────────────────────────────────────────────
+    # On Render (hosted): set RESEND_API_KEY — Render blocks SMTP, Resend uses HTTPS.
+    # Sign up free at https://resend.com → API Keys → Create key
+    # Locally: leave RESEND_API_KEY empty and use SMTP below instead.
+    RESEND_API_KEY: str = ""
+    RESEND_FROM: str = "onboarding@resend.dev"  # change to your verified domain email
+
+    # Gmail SMTP — used locally when RESEND_API_KEY is not set
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
     SMTP_USER: str = ""

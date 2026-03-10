@@ -35,7 +35,8 @@ openai==1.51.0
 requests==2.32.3
 
 # ── Email ─────────────────────────────────────────────────────────────────────
-# (uses stdlib smtplib — no extra package needed)
+# Resend: used on Render (SMTP is blocked on free tier, Resend uses HTTPS)
+resend==2.0.0
 
 # ── Google Calendar ───────────────────────────────────────────────────────────
 google-api-python-client==2.148.0
