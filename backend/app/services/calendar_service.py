@@ -63,11 +63,17 @@ def get_calendar_service():
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
+            with open(TOKEN_FILE, "wb") as token:
+                pickle.dump(creds, token)
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
-            creds = flow.run_local_server(port=8090)
-        with open(TOKEN_FILE, "wb") as token:
-            pickle.dump(creds, token)
+            # On a server there is no browser — never attempt interactive OAuth.
+            # Fix: regenerate token.pickle locally with both scopes, re-encode as
+            # base64, and update GOOGLE_TOKEN_B64 on Render.
+            raise RuntimeError(
+                "Google OAuth token missing or invalid. "
+                "Re-run local OAuth (delete token.pickle, start backend, log in), "
+                "then update GOOGLE_TOKEN_B64 on Render with the new base64 value."
+            )
 
     return build("calendar", "v3", credentials=creds)
 
