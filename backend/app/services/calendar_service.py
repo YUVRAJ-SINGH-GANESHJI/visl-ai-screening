@@ -4,6 +4,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 import os
+import pathlib
 import pickle
 import uuid
 import base64
@@ -12,12 +13,15 @@ from app.logger import get_logger
 
 log = get_logger("calendar_service")
 
+# Absolute path to the backend/ folder — works regardless of where uvicorn is launched from
+_BACKEND_DIR = pathlib.Path(__file__).resolve().parents[2]
+
 SCOPES = [
     "https://www.googleapis.com/auth/calendar",
     "https://www.googleapis.com/auth/gmail.send",
 ]
-TOKEN_FILE = "token.pickle"
-CREDENTIALS_FILE = "credentials.json"
+TOKEN_FILE = str(_BACKEND_DIR / "token.pickle")
+CREDENTIALS_FILE = str(_BACKEND_DIR / "credentials.json")
 
 
 def _bootstrap_credentials_from_env():
@@ -29,25 +33,25 @@ def _bootstrap_credentials_from_env():
       GOOGLE_CREDENTIALS_JSON  — full contents of credentials.json (paste as-is)
       GOOGLE_TOKEN_B64         — base64-encoded token.pickle (see HOSTING.md §5)
     """
-    # Write credentials.json from env var if the file doesn't exist locally
-    if not os.path.exists(CREDENTIALS_FILE):
-        creds_json = os.environ.get("GOOGLE_CREDENTIALS_JSON", "")
-        if creds_json:
-            with open(CREDENTIALS_FILE, "w") as f:
-                f.write(creds_json)
-            log.info("credentials.json written from GOOGLE_CREDENTIALS_JSON env var")
-        else:
-            log.warning("credentials.json missing and GOOGLE_CREDENTIALS_JSON env var not set")
+    # Always write credentials.json from env var if the env var is set
+    # (env var takes precedence over any existing local file)
+    creds_json = os.environ.get("GOOGLE_CREDENTIALS_JSON", "")
+    if creds_json:
+        with open(CREDENTIALS_FILE, "w") as f:
+            f.write(creds_json)
+        log.info("credentials.json written from GOOGLE_CREDENTIALS_JSON env var")
+    elif not os.path.exists(CREDENTIALS_FILE):
+        log.warning("credentials.json missing and GOOGLE_CREDENTIALS_JSON env var not set")
 
-    # Write token.pickle from base64 env var if the file doesn't exist locally
-    if not os.path.exists(TOKEN_FILE):
-        token_b64 = os.environ.get("GOOGLE_TOKEN_B64", "")
-        if token_b64:
-            with open(TOKEN_FILE, "wb") as f:
-                f.write(base64.b64decode(token_b64))
-            log.info("token.pickle written from GOOGLE_TOKEN_B64 env var")
-        else:
-            log.warning("token.pickle missing and GOOGLE_TOKEN_B64 env var not set — OAuth login will be required")
+    # Always write token.pickle from env var if the env var is set
+    # (env var takes precedence — ensures updated tokens are always applied)
+    token_b64 = os.environ.get("GOOGLE_TOKEN_B64", "")
+    if token_b64:
+        with open(TOKEN_FILE, "wb") as f:
+            f.write(base64.b64decode(token_b64))
+        log.info("token.pickle written from GOOGLE_TOKEN_B64 env var")
+    elif not os.path.exists(TOKEN_FILE):
+        log.warning("token.pickle missing and GOOGLE_TOKEN_B64 env var not set — OAuth login will be required")
 
 
 def get_calendar_service():
