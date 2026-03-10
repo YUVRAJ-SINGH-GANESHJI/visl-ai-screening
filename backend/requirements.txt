@@ -1,0 +1,45 @@
+# ── Web framework ─────────────────────────────────────────────────────────────
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+
+# ── Database ──────────────────────────────────────────────────────────────────
+sqlalchemy==2.0.35
+# Uncomment below if you switch DATABASE_URL to PostgreSQL on Render / Railway:
+# psycopg2-binary==2.9.9
+
+# ── Config / Validation ───────────────────────────────────────────────────────
+pydantic==2.9.2
+pydantic-settings==2.5.2
+python-dotenv==1.0.1
+
+# ── File upload ───────────────────────────────────────────────────────────────
+python-multipart==0.0.12
+
+# ── CSV / Data ────────────────────────────────────────────────────────────────
+pandas==2.2.3
+
+# ── Resume processing ─────────────────────────────────────────────────────────
+httpx==0.27.2
+PyPDF2==3.0.1
+
+# ── LLM API (free public — Groq / any OpenAI-compatible endpoint) ─────────────
+# The openai Python client works with Groq, Together AI, Ollama, etc.
+# by changing LLM_BASE_URL + LLM_API_KEY in .env — no code changes needed.
+openai==1.51.0
+
+# ── GitHub API ────────────────────────────────────────────────────────────────
+requests==2.32.3
+
+# ── Email ─────────────────────────────────────────────────────────────────────
+# (uses stdlib smtplib — no extra package needed)
+
+# ── Google Calendar ───────────────────────────────────────────────────────────
+google-api-python-client==2.148.0
+google-auth-oauthlib==1.2.1
+google-auth-httplib2==0.2.0
+
+# ── Logging ───────────────────────────────────────────────────────────────────
+loguru==0.7.2
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+aiofiles==24.1.0
