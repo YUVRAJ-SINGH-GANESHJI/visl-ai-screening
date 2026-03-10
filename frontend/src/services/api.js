@@ -41,15 +41,18 @@ export const uploadTestResults = (file) => {
 export const sendTestEmails = (candidateIds, testUrl, emailBody = "") =>
   api.post("/email/send-test", { candidate_ids: candidateIds, test_url: testUrl, email_body: emailBody });
 
-export const scheduleInterviews = (candidateIds, dateTime, durationMinutes = 30) =>
-  api.post(
-    "/interview/schedule",
-    candidateIds.map((id) => ({
-      candidate_id: id,
-      interview_date: dateTime,
-      duration_minutes: durationMinutes,
-    }))
-  );
+export const scheduleInterviews = (candidateIdsOrEntries, dateTime, durationMinutes = 30) => {
+  // If first arg is already an array of objects with candidate_id, pass directly
+  const entries =
+    candidateIdsOrEntries.length > 0 && typeof candidateIdsOrEntries[0] === "object"
+      ? candidateIdsOrEntries
+      : candidateIdsOrEntries.map((id) => ({
+          candidate_id: id,
+          interview_date: dateTime,
+          duration_minutes: durationMinutes,
+        }));
+  return api.post("/interview/schedule", entries);
+};
 
 export const runFinalEvaluation = () => api.post("/evaluate/finalize");
 

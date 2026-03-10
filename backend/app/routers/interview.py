@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime
@@ -22,7 +22,7 @@ class InterviewEntry(BaseModel):
 
 @router.post("/schedule")
 async def schedule_interviews(
-    interviews: List[InterviewEntry] = Body(...),
+    interviews: List[InterviewEntry],
     db: Session = Depends(get_db),
 ):
     """Schedule Google Calendar interviews with unique Meet links per candidate."""
