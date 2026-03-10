@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import ScoreBreakdown from "./ScoreBreakdown";
 
 const STAGE_BADGE = {
@@ -49,9 +49,8 @@ export default function AiEvalTable({ candidates }) {
           </thead>
           <tbody>
             {sorted.map((c, i) => (
-              <>
+              <React.Fragment key={c.id}>
                 <tr
-                  key={c.id}
                   className={`border-b transition ${expandedId === c.id ? "bg-blue-50" : "hover:bg-gray-50"} cursor-pointer`}
                   onClick={() => setExpandedId(expandedId === c.id ? null : c.id)}
                 >
@@ -87,7 +86,7 @@ export default function AiEvalTable({ candidates }) {
                     </td>
                   </tr>
                 )}
-              </>
+              </React.Fragment>
             ))}
           </tbody>
         </table>

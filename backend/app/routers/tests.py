@@ -28,14 +28,16 @@ async def upload_test_results(file: UploadFile = File(...), db: Session = Depend
         email = result.get("email", "").strip()
         name = result.get("name", "").strip()
 
-        # Match by email first, then fall back to name
+        # Match by name first (most specific), then email
+        # Reason: multiple candidates can share a dummy/test email (e.g. during testing)
+        # so matching by name avoids only the first shared-email candidate getting updated.
         candidate = None
-        if email:
-            candidate = db.query(Candidate).filter(Candidate.email == email).first()
-        if not candidate and name:
+        if name:
             candidate = db.query(Candidate).filter(Candidate.name == name).first()
+        if not candidate and email:
+            candidate = db.query(Candidate).filter(Candidate.email == email).first()
         if not candidate:
-            not_found.append(email or name)
+            not_found.append(name or email)
             continue
 
         test_la = float(result.get("test_la", 0)) if result.get("test_la") != "" else None

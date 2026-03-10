@@ -192,12 +192,12 @@ export default function Dashboard() {
           </StepSection>
         )}
 
-        {/* ── STEP 4: Upload Test Results ── */}
-        {currentStep >= 4 && (
+        {/* ── STEP 4: Upload Test Results — always visible once AI eval done ── */}
+        {currentStep >= 3 && aiEvalDone && (
           <StepSection
             number={4}
             title="Upload Test Results CSV"
-            subtitle="Upload Test_Result.csv with columns: name, email, test_la, test_code."
+            subtitle="If tests are already completed, upload Test_Result.csv directly (no need to wait for Step 3)."
             done={testsDone}
             active={currentStep === 4}
           >
