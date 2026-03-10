@@ -1,3 +1,4 @@
+#_YUVRAJ SINGH_
 # ── Web framework ─────────────────────────────────────────────────────────────
 fastapi==0.115.0
 uvicorn[standard]==0.30.6
@@ -5,7 +6,8 @@ uvicorn[standard]==0.30.6
 # ── Database ──────────────────────────────────────────────────────────────────
 sqlalchemy==2.0.35
 # Uncomment below if you switch DATABASE_URL to PostgreSQL on Render / Railway:
-# psycopg2-binary==2.9.9
+#_YUVRAJ SINGH_
+# psycopg2-binary==2.9.9 
 
 # ── Config / Validation ───────────────────────────────────────────────────────
 pydantic==2.9.2
@@ -25,7 +27,9 @@ PyPDF2==3.0.1
 # ── LLM API (free public — Groq / any OpenAI-compatible endpoint) ─────────────
 # The openai Python client works with Groq, Together AI, Ollama, etc.
 # by changing LLM_BASE_URL + LLM_API_KEY in .env — no code changes needed.
-openai==1.51.0
+# I am using Groq LLM API _YUVRAJ SINGH_
+openai==1.51.0 
+
 
 # ── GitHub API ────────────────────────────────────────────────────────────────
 requests==2.32.3
