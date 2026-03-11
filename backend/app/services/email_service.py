@@ -34,7 +34,7 @@ def _send_via_gmail_api(to_email: str, subject: str, html_body: str) -> bool:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                raise RuntimeError("Gmail OAuth token missing or expired — re-run local OAuth")
+                raise RuntimeError("Gmail OAuth token missing or expired - re-run local OAuth")
 
         service = build("gmail", "v1", credentials=creds)
 
@@ -53,7 +53,7 @@ def _send_via_gmail_api(to_email: str, subject: str, html_body: str) -> bool:
 
 
 def _send_via_smtp(to_email: str, subject: str, html_body: str) -> bool:
-    """Send email via Gmail SMTP (local dev — blocked on Render free tier)."""
+    """Send email via Gmail SMTP (local dev - blocked on Render free tier)."""
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"] = settings.SMTP_USER
@@ -67,7 +67,7 @@ def _send_via_smtp(to_email: str, subject: str, html_body: str) -> bool:
         log.info("Email sent via SMTP", to=to_email)
         return True
     except smtplib.SMTPAuthenticationError:
-        log.error("SMTP authentication failed — check credentials")
+        log.error("SMTP authentication failed - check credentials")
         return False
     except smtplib.SMTPRecipientsRefused:
         log.error("Recipient refused", to=to_email)
@@ -79,7 +79,7 @@ def _send_via_smtp(to_email: str, subject: str, html_body: str) -> bool:
 
 def send_email(to_email: str, subject: str, html_body: str) -> bool:
     """
-    Send email — picks method automatically:
+    Send email - picks method automatically:
       • Gmail API  → when credentials.json exists locally OR GOOGLE_CREDENTIALS_JSON env var is set (Render)
       • Gmail SMTP → only if neither Google credential source is available
     """
@@ -102,7 +102,7 @@ def send_test_link(candidate_name: str, to_email: str, test_url: str, custom_bod
     <br>
     <p>Best regards,<br>Visl AI Labs Recruitment Team</p>
     """
-    return send_email(to_email, "Visl AI Labs — Assessment Invitation", html)
+    return send_email(to_email, "Visl AI Labs - Assessment Invitation", html)
 
 
 def send_interview_invite(
@@ -110,7 +110,7 @@ def send_interview_invite(
 ) -> bool:
     """Send interview invitation with Google Meet link."""
     html = f"""
-    <h2>Interview Invitation — Visl AI Labs</h2>
+    <h2>Interview Invitation - Visl AI Labs</h2>
     <p>Dear {candidate_name},</p>
     <p>We are pleased to invite you for an interview.</p>
     <p><strong>Date & Time:</strong> {datetime_str}</p>
@@ -118,4 +118,4 @@ def send_interview_invite(
     <br>
     <p>Best regards,<br>Visl AI Labs Recruitment Team</p>
     """
-    return send_email(to_email, "Visl AI Labs — Interview Invitation", html)
+    return send_email(to_email, "Visl AI Labs - Interview Invitation", html)

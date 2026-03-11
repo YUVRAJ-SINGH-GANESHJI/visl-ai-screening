@@ -5,7 +5,7 @@ from loguru import logger
 # Remove loguru's default handler so we control all output
 logger.remove()
 
-# ── Console handler — human-readable coloured output ────────────────────────
+# ── Console handler - human-readable coloured output ────────────────────────
 logger.add(
     sys.stderr,
     format=(
@@ -19,7 +19,7 @@ logger.add(
     colorize=True,
 )
 
-# ── File handler — JSON structured logs, rotated daily / at 10 MB ───────────
+# ── File handler - JSON structured logs, rotated daily / at 10 MB ───────────
 os.makedirs("logs", exist_ok=True)
 
 logger.add(
@@ -28,11 +28,11 @@ logger.add(
     retention="30 days",
     compression="zip",
     level="INFO",
-    serialize=True,   # writes each record as a JSON object — easy to grep/parse
+    serialize=True,   # writes each record as a JSON object - easy to grep/parse
     enqueue=True,     # non-blocking writes
 )
 
-# ── Error-only log file — kept for 60 days ───────────────────────────────────
+# ── Error-only log file - kept for 60 days ───────────────────────────────────
 logger.add(
     "logs/errors_{time:YYYY-MM-DD}.log",
     rotation="10 MB",

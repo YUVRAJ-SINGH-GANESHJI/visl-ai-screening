@@ -6,7 +6,7 @@ from app.logger import get_logger
 log = get_logger("ai_evaluator")
 
 # The openai client works with any OpenAI-compatible LLM API.
-# Change LLM_BASE_URL + LLM_API_KEY in .env to switch providers — no code change.
+# Change LLM_BASE_URL + LLM_API_KEY in .env to switch providers - no code change.
 # Free options: Groq (https://console.groq.com) or Ollama (local)
 client = OpenAI(api_key=settings.LLM_API_KEY, base_url=settings.LLM_BASE_URL)
 
@@ -28,20 +28,20 @@ against the provided job description.
 **Scoring Instructions:**
 Rate each dimension from 0 to 100 and provide a brief justification.
 
-**IMPORTANT — Strict Scoring Rules (read carefully before scoring):**
+**IMPORTANT - Strict Scoring Rules (read carefully before scoring):**
 
-1. `project_quality` — Score SOLELY from the `Best AI Project` field.
+1. `project_quality` - Score SOLELY from the `Best AI Project` field.
    - If that field is empty, "N/A", or missing → score MUST be 0, reasoning: "No AI project provided."
    - Do NOT infer projects from resume text or research work.
 
-2. `research_quality` — Score SOLELY from the `Research Work` field.
+2. `research_quality` - Score SOLELY from the `Research Work` field.
    - If that field is empty, "N/A", or missing → score MUST be 0, reasoning: "No research work provided."
    - Do NOT infer research from project descriptions or resume text.
 
-3. `resume_jd_relevance` — Based on resume text vs job description.
+3. `resume_jd_relevance` - Based on resume text vs job description.
    - If `Resume Text` is empty or "N/A", note this explicitly and score conservatively based on branch, CGPA, and project descriptions only.
 
-NOTE: GitHub quality is scored separately — do NOT include it in your response.
+NOTE: GitHub quality is scored separately - do NOT include it in your response.
 
 Return ONLY valid JSON in this exact format:
 {{
@@ -66,7 +66,7 @@ Return ONLY valid JSON in this exact format:
 
 
 def evaluate_candidate(candidate: dict, job_description: str) -> dict:
-    """Use LLM to evaluate a candidate against a job description (excludes GitHub — scored separately)."""
+    """Use LLM to evaluate a candidate against a job description (excludes GitHub - scored separately)."""
     log.info("Evaluating candidate with AI", candidate_name=candidate.get("name"))
 
     has_project = bool(candidate.get("best_ai_project", "").strip() not in ("", "N/A", "None", "none"))
@@ -109,7 +109,7 @@ def evaluate_candidate(candidate: dict, job_description: str) -> dict:
             original = result["resume_jd_relevance"]
             result["resume_jd_relevance"] = {
                 "score": original.get("score", 0),
-                "reasoning": "[No resume available — scored from branch/CGPA/projects only] " + original.get("reasoning", ""),
+                "reasoning": "[No resume available - scored from branch/CGPA/projects only] " + original.get("reasoning", ""),
             }
 
         log.info(

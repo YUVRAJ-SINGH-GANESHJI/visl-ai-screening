@@ -13,7 +13,7 @@ from app.logger import get_logger
 
 log = get_logger("calendar_service")
 
-# Absolute path to the backend/ folder — works regardless of where uvicorn is launched from
+# Absolute path to the backend/ folder - works regardless of where uvicorn is launched from
 _BACKEND_DIR = pathlib.Path(__file__).resolve().parents[2]
 
 SCOPES = [
@@ -30,8 +30,8 @@ def _bootstrap_credentials_from_env():
     and token.pickle from environment variables before OAuth runs.
 
     Set these on Render → Environment:
-      GOOGLE_CREDENTIALS_JSON  — full contents of credentials.json (paste as-is)
-      GOOGLE_TOKEN_B64         — base64-encoded token.pickle (see HOSTING.md §5)
+      GOOGLE_CREDENTIALS_JSON  - full contents of credentials.json (paste as-is)
+      GOOGLE_TOKEN_B64         - base64-encoded token.pickle (see HOSTING.md §5)
     """
     # Always write credentials.json from env var if the env var is set
     # (env var takes precedence over any existing local file)
@@ -44,14 +44,14 @@ def _bootstrap_credentials_from_env():
         log.warning("credentials.json missing and GOOGLE_CREDENTIALS_JSON env var not set")
 
     # Always write token.pickle from env var if the env var is set
-    # (env var takes precedence — ensures updated tokens are always applied)
+    # (env var takes precedence - ensures updated tokens are always applied)
     token_b64 = os.environ.get("GOOGLE_TOKEN_B64", "")
     if token_b64:
         with open(TOKEN_FILE, "wb") as f:
             f.write(base64.b64decode(token_b64))
         log.info("token.pickle written from GOOGLE_TOKEN_B64 env var")
     elif not os.path.exists(TOKEN_FILE):
-        log.warning("token.pickle missing and GOOGLE_TOKEN_B64 env var not set — OAuth login will be required")
+        log.warning("token.pickle missing and GOOGLE_TOKEN_B64 env var not set - OAuth login will be required")
 
 
 def get_calendar_service():
@@ -70,7 +70,7 @@ def get_calendar_service():
             with open(TOKEN_FILE, "wb") as token:
                 pickle.dump(creds, token)
         else:
-            # On a server there is no browser — never attempt interactive OAuth.
+            # On a server there is no browser - never attempt interactive OAuth.
             # Fix: regenerate token.pickle locally with both scopes, re-encode as
             # base64, and update GOOGLE_TOKEN_B64 on Render.
             raise RuntimeError(
@@ -95,7 +95,7 @@ def schedule_interview(
         service = get_calendar_service()
 
         event = {
-            "summary": f"Interview — {candidate_name} | Visl AI Labs",
+            "summary": f"Interview - {candidate_name} | Visl AI Labs",
             "description": f"Technical interview with {candidate_name}",
             "start": {
                 "dateTime": interview_datetime.isoformat(),

@@ -61,17 +61,17 @@ export default function CandidateList({ candidates }) {
                   <td className="p-3 font-mono text-gray-500">{i + 1}</td>
                   <td className="p-3 font-medium">{c.name}</td>
                   <td className="p-3 text-gray-600">{c.college}</td>
-                  <td className="p-3">{c.cgpa?.toFixed(1) || "—"}</td>
-                  <td className="p-3">{c.resume_jd_score?.toFixed(0) || "—"}</td>
-                  <td className="p-3">{c.github_score?.toFixed(0) || "—"}</td>
-                  <td className="p-3">{c.project_score?.toFixed(0) || "—"}</td>
+                  <td className="p-3">{c.cgpa?.toFixed(1) || "-"}</td>
+                  <td className="p-3">{c.resume_jd_score?.toFixed(0) || "-"}</td>
+                  <td className="p-3">{c.github_score?.toFixed(0) || "-"}</td>
+                  <td className="p-3">{c.project_score?.toFixed(0) || "-"}</td>
                   <td className="p-3">
                     {c.test_code_score != null
-                      ? `${c.test_code_score.toFixed(0)} / ${c.test_la_score?.toFixed(0) || "—"}`
-                      : "—"}
+                      ? `${c.test_code_score.toFixed(0)} / ${c.test_la_score?.toFixed(0) || "-"}`
+                      : "-"}
                   </td>
                   <td className="p-3 font-bold font-mono text-lg">
-                    {c.composite_score?.toFixed(1) || "—"}
+                    {c.composite_score?.toFixed(1) || "-"}
                   </td>
                   <td className="p-3">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${stageBadge(c.stage)}`}>

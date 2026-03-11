@@ -34,7 +34,7 @@ async def send_test_emails(
             else:
                 results.append({
                     "name": c.name, "email": c.email, "status": "failed",
-                    "reason": "Email service returned False — check Render logs for details",
+                    "reason": "Email service returned False - check Render logs for details",
                 })
         except Exception as e:
             log.error("Exception sending test email", candidate=c.name, error=str(e))

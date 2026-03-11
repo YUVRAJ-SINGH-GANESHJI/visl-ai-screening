@@ -21,7 +21,7 @@ export default function JobDescription({ onSubmit, loading }) {
         onClick={handleSubmit}
         disabled={loading || !jd.trim()}
       >
-        {loading ? "⏳ Evaluating..." : "🚀 Run AI Evaluation"}
+        {loading ? "Evaluating..." : "Run AI Evaluation"}
       </button>
     </div>
   );

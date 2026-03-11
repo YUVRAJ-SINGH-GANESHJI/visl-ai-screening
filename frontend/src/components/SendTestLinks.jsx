@@ -60,7 +60,7 @@ export default function SendTestLinks({ candidates, onSent }) {
     <section className="mb-6 bg-white rounded-lg shadow overflow-hidden">
       <div className="px-6 py-4 border-b bg-orange-50 flex items-center justify-between">
         <h2 className="text-lg font-bold text-orange-900">
-          📧 Send Test Links — Select Candidates
+          Send Test Links - Select Candidates
         </h2>
         <span className="text-sm text-orange-600 font-medium">
           {selectedIds.size} / {sorted.length} selected
@@ -112,7 +112,7 @@ export default function SendTestLinks({ candidates, onSent }) {
                   {c.college}
                 </td>
                 <td className="px-4 py-3 font-bold font-mono text-blue-700">
-                  {c.composite_score?.toFixed(1) ?? "—"}
+                  {c.composite_score?.toFixed(1) ?? "-"}
                 </td>
               </tr>
             ))}
@@ -136,7 +136,7 @@ export default function SendTestLinks({ candidates, onSent }) {
         </div>
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-1">
-            Email Body <span className="text-gray-400 font-normal">(optional — replaces default message)</span>
+            Email Body <span className="text-gray-400 font-normal">(optional - replaces default message)</span>
           </label>
           <textarea
             value={emailBody}
@@ -154,8 +154,8 @@ export default function SendTestLinks({ candidates, onSent }) {
             className="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 transition font-semibold text-sm shadow"
           >
             {loading
-              ? "⏳ Sending..."
-              : `📤 Send Test Links to ${selectedIds.size} Candidate${selectedIds.size !== 1 ? "s" : ""}`}
+              ? "Sending..."
+              : `Send Test Links to ${selectedIds.size} Candidate${selectedIds.size !== 1 ? "s" : ""}`}
           </button>
           {selectedIds.size === 0 && (
             <span className="text-xs text-gray-400">Select at least one candidate</span>
@@ -166,13 +166,13 @@ export default function SendTestLinks({ candidates, onSent }) {
         {result && !result.error && (
           <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">
             <p className="font-semibold">
-              ✓ {result.sent} email{result.sent !== 1 ? "s" : ""} sent successfully
+              {result.sent} email{result.sent !== 1 ? "s" : ""} sent successfully
               {result.failed > 0 && `, ${result.failed} failed`}
             </p>
             <ul className="mt-2 space-y-0.5 text-xs">
               {result.details.map((r, i) => (
                 <li key={i}>
-                  {r.status === "sent" ? "✅" : "❌"} {r.name} — {r.email} — {r.status}
+                  {r.status === "sent" ? "Sent" : "Failed"} - {r.name} - {r.email}
                   {r.reason && (
                     <span className="text-red-500 ml-1">({r.reason})</span>
                   )}
@@ -183,7 +183,7 @@ export default function SendTestLinks({ candidates, onSent }) {
         )}
         {result?.error && (
           <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
-            ✗ Failed: {result.error}
+            Failed: {result.error}
           </div>
         )}
       </div>

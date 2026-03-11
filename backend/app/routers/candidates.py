@@ -39,6 +39,8 @@ async def list_candidates(stage: str = None, db: Session = Depends(get_db)):
             "composite_score": c.composite_score,
             "score_explanation": json.loads(c.score_explanation) if c.score_explanation else None,
             "stage": c.stage,
+            "interview_datetime": c.interview_datetime,
+            "meet_link": c.meet_link,
         }
         for c in candidates
     ]

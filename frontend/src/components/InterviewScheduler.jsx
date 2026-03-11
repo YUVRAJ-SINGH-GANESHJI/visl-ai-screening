@@ -49,7 +49,7 @@ export default function InterviewScheduler({ candidates }) {
                     onChange={() => toggleCandidate(c.id)}
                     className="rounded"
                   />
-                  {c.name} — {c.composite_score?.toFixed(1) || "—"}
+                  {c.name} - {c.composite_score?.toFixed(1) || "-"}
                 </label>
               ))}
             </div>
@@ -104,7 +104,7 @@ export default function InterviewScheduler({ candidates }) {
               <ul className="space-y-1 text-xs">
                 {results.results?.map((r, i) => (
                   <li key={i}>
-                    {r.status === "scheduled" ? "✅" : "❌"} {r.name} — {r.email} — {r.status}
+                    {r.status === "scheduled" ? "✅" : "❌"} {r.name} - {r.email} - {r.status}
                     {r.meet_link && <span className="text-blue-600 ml-1">({r.meet_link})</span>}
                     {r.error && <span className="text-red-500 ml-1">({r.error})</span>}
                   </li>

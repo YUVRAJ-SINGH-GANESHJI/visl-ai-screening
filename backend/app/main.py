@@ -123,7 +123,7 @@ async def global_exception_handler(request: Request, exc: Exception):
         status_code=500,
         content={
             "error": "Internal server error",
-            # Show details in DEBUG mode only — never leak stack traces in production
+            # Show details in DEBUG mode only - never leak stack traces in production
             "detail": str(exc) if settings.DEBUG else "An unexpected error occurred.",
         },
     )

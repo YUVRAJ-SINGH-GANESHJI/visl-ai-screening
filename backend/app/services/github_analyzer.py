@@ -5,7 +5,7 @@ from app.logger import get_logger
 log = get_logger("github_analyzer")
 
 async def analyze_github_profile(github_url: str) -> dict:
-    """Analyze a GitHub profile — repos, languages, contributions."""
+    """Analyze a GitHub profile - repos, languages, contributions."""
     username = github_url.rstrip("/").split("/")[-1]
     if not username:
         log.warning("Invalid GitHub URL", url=github_url)
@@ -75,7 +75,7 @@ def compute_github_score(analysis: dict) -> dict:
     """Compute a deterministic GitHub quality score from raw analysis data."""
     if not analysis or "error" in analysis:
         error_msg = analysis.get("error", "No data") if analysis else "No GitHub URL"
-        return {"score": 0, "reasoning": f"GitHub profile unavailable — {error_msg}"}
+        return {"score": 0, "reasoning": f"GitHub profile unavailable - {error_msg}"}
 
     username = analysis.get("username", "unknown")
     repos = analysis.get("public_repos", 0)
@@ -123,7 +123,7 @@ def compute_github_score(analysis: dict) -> dict:
     total = repos_pts + ai_pts + lang_pts + eng_pts + fol_pts
 
     reasoning = (
-        f"GitHub @{username} — "
+        f"GitHub @{username} - "
         f"Repos: {repos} ({repos_pts}/30) | "
         f"AI/ML repos: {ai_repos} ({ai_pts}/30) | "
         f"Languages: {', '.join(languages) if languages else 'None'} ({lang_pts}/15) | "

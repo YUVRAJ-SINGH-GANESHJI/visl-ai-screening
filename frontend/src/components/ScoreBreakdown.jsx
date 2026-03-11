@@ -23,11 +23,13 @@ export default function ScoreBreakdown({ breakdown, excludeKeys = [], title = "S
     ([key]) => !excludeKeys.includes(key)
   );
 
+  const visibleSum = visibleEntries.reduce((sum, [, comp]) => sum + (comp.weighted ?? 0), 0);
+
   return (
     <div>
       <h4 className="font-semibold mb-3">
-        {title} —{" "}
-        <span className="text-blue-600">{breakdown.composite_score?.toFixed(1)}</span> / 100
+        {title} -{" "}
+        <span className="text-blue-600">{visibleSum.toFixed(1)}</span> / 100
       </h4>
       <div className="space-y-3">
         {visibleEntries.map(([key, comp]) => (

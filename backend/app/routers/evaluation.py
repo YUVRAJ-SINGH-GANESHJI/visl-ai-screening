@@ -59,7 +59,7 @@ async def run_evaluation(
                     computed_score=github_score_result["score"],
                 )
 
-            # 3. AI Evaluation (resume, project, research — GitHub excluded)
+            # 3. AI Evaluation (resume, project, research - GitHub excluded)
             candidate_data = {
                 "name": candidate.name,
                 "college": candidate.college,

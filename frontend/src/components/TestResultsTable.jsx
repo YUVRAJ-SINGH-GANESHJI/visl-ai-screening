@@ -13,7 +13,7 @@ export default function TestResultsTable({ candidates }) {
     <section className="mb-6 bg-white rounded-lg shadow overflow-hidden">
       <div className="px-6 py-4 border-b bg-purple-50 flex items-center justify-between">
         <h2 className="text-lg font-bold text-purple-900">
-          📝 Table 2 — Test Results
+          📝 Table 2 - Test Results
         </h2>
         <span className="text-sm text-purple-600 font-medium">{sorted.length} candidates</span>
       </div>
@@ -25,8 +25,8 @@ export default function TestResultsTable({ candidates }) {
               <th className="px-4 py-3">#</th>
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Email</th>
-              <th className="px-4 py-3 text-center">Test — LA (/100)</th>
-              <th className="px-4 py-3 text-center">Test — Code (/100)</th>
+              <th className="px-4 py-3 text-center">Test - LA (/100)</th>
+              <th className="px-4 py-3 text-center">Test - Code (/100)</th>
               <th className="px-4 py-3 text-center font-bold text-purple-700">Combined Test Score</th>
             </tr>
           </thead>
@@ -71,7 +71,7 @@ function combinedTestScore(c) {
 }
 
 function ScoreCell({ value }) {
-  if (value == null) return <span className="text-gray-300">—</span>;
+  if (value == null) return <span className="text-gray-300">-</span>;
   const color =
     value >= 75 ? "text-green-600" : value >= 50 ? "text-yellow-600" : "text-red-500";
   return <span className={`font-mono font-semibold ${color}`}>{value.toFixed(0)}</span>;

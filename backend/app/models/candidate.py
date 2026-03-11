@@ -3,7 +3,7 @@ from app.database import Base
 
 
 class PipelineStage:
-    """Candidate pipeline stages — stored as plain strings in the DB."""
+    """Candidate pipeline stages - stored as plain strings in the DB."""
     UPLOADED = "uploaded"
     EVALUATED = "evaluated"
     SHORTLISTED = "shortlisted"

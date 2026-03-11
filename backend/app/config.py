@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "sqlite:///./screening.db"
 
-    # ── LLM API (free public API — Groq by default) ──────────────────────────
+    # ── LLM API (free public API - Groq by default) ──────────────────────────
     # Groq gives a free tier with fast Llama models, no credit card needed.
     # Sign up at https://console.groq.com → API Keys → Create key
     # Swap LLM_BASE_URL + LLM_MODEL to use any OpenAI-compatible provider:
@@ -26,13 +26,13 @@ class Settings(BaseSettings):
     GITHUB_TOKEN: str = ""
 
     # ── Email ─────────────────────────────────────────────────────────────────
-    # On Render (hosted): set RESEND_API_KEY — Render blocks SMTP, Resend uses HTTPS.
+    # On Render (hosted): set RESEND_API_KEY - Render blocks SMTP, Resend uses HTTPS.
     # Sign up free at https://resend.com → API Keys → Create key
     # Locally: leave RESEND_API_KEY empty and use SMTP below instead.
     RESEND_API_KEY: str = ""
     RESEND_FROM: str = "onboarding@resend.dev"  # change to your verified domain email
 
-    # Gmail SMTP — used locally when RESEND_API_KEY is not set
+    # Gmail SMTP - used locally when RESEND_API_KEY is not set
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
     SMTP_USER: str = ""

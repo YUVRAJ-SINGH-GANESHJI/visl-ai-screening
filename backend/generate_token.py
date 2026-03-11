@@ -22,4 +22,4 @@ with open(TOKEN_FILE, "wb") as f:
     pickle.dump(creds, f)
 
 print(f"\n✅ token.pickle saved to {TOKEN_FILE}")
-print("You can now restart uvicorn — Gmail API + Calendar will work.")
+print("You can now restart uvicorn - Gmail API + Calendar will work.")

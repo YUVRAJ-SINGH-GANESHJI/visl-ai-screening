@@ -23,14 +23,15 @@ export default function CsvUpload({ onUploadSuccess }) {
       setMessage(`✗ Upload failed: ${err.response?.data?.error || err.message}`);
     }
     setLoading(false);
-    // Reset input so same file can be re-uploaded
     e.target.value = "";
   };
 
   return (
     <div>
-      <label className="inline-flex items-center gap-2 cursor-pointer px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold disabled:opacity-50">
-        {loading ? "⏳ Uploading..." : "📄 Choose Response CSV"}
+      <label className={`inline-flex items-center gap-2 cursor-pointer px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm transition ${
+        loading ? "bg-blue-400 text-white cursor-wait" : "bg-blue-600 hover:bg-blue-700 text-white"
+      }`}>
+        <span>{loading ? "Uploading..." : "Choose Response.csv"}</span>
         <input
           type="file"
           accept=".csv"
@@ -40,10 +41,11 @@ export default function CsvUpload({ onUploadSuccess }) {
         />
       </label>
       {message && (
-        <p className={`mt-3 text-sm ${message.startsWith("✓") ? "text-green-600" : "text-red-600"}`}>
+        <p className={`mt-3 text-sm font-medium ${message.startsWith("✓") ? "text-green-600" : "text-red-600"}`}>
           {message}
         </p>
       )}
     </div>
   );
 }
+
